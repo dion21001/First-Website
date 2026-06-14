@@ -3,6 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,7 +15,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+import boto3
+
+def get_secret(name):
+    client = boto3.client('ssm', region_name='us-west-2')
+    response = client.get_parameter(
+        Name=name,
+        WithDecryption=True
+    )
+    return response['Parameter']['Value']
+
+
+SECRET_KEY = get_secret("/first-website/SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
