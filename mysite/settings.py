@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'RDSPERCOBAAN',
+        'USER': 'admin',
+        'PASSWORD': 'Pramuka123',
+        'HOST': 'database-1.cg84keca9azq.us-west-2.rds.amazonaws.com',
+        'PORT': '3306',
     }
 }
 
