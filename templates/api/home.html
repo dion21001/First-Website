@@ -1,0 +1,878 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Toba</title>
+    <style>
+        :root {
+            --surface: rgba(29, 20, 13, 0.78);
+            --surface-soft: rgba(255, 244, 224, 0.08);
+            --surface-strong: rgba(47, 32, 20, 0.92);
+            --text: #f9ecd7;
+            --muted: #d7b996;
+            --gold: #e1aa63;
+            --line: rgba(234, 190, 127, 0.18);
+            --shadow: 0 30px 80px rgba(0, 0, 0, 0.38);
+            --danger: #ffb199;
+            --success: #dff6c9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top, rgba(225, 170, 99, 0.16), transparent 30%),
+                linear-gradient(180deg, #1b120c 0%, #120c08 52%, #1a120b 100%);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background:
+                linear-gradient(90deg, rgba(13, 9, 6, 0.9) 0%, rgba(13, 9, 6, 0.58) 42%, rgba(13, 9, 6, 0.14) 100%),
+                url("{% static 'api/images/coffee-toba-hero.png' %}") center center / cover no-repeat;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 30% 25%, rgba(255, 197, 120, 0.22), transparent 20%),
+                linear-gradient(180deg, transparent 48%, rgba(10, 7, 5, 0.76) 100%);
+        }
+
+        .wrap {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            padding: 28px 0;
+        }
+
+        .nav-inner {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: #f8e8d1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            color: rgba(248, 232, 209, 0.82);
+            font-size: 0.95rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 32px;
+            align-items: end;
+            padding: 120px 0 72px;
+        }
+
+        .hero-copy {
+            max-width: 620px;
+            animation: rise 0.9s ease both;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 240, 215, 0.12);
+            border: 1px solid rgba(255, 240, 215, 0.12);
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.78rem;
+        }
+
+        h1 {
+            margin: 20px 0 18px;
+            font-size: clamp(3rem, 8vw, 6.4rem);
+            line-height: 0.92;
+            letter-spacing: -0.05em;
+            max-width: 760px;
+        }
+
+        .lead {
+            margin: 0;
+            color: rgba(249, 236, 215, 0.86);
+            font-size: 1.08rem;
+            line-height: 1.9;
+            max-width: 560px;
+        }
+
+        .hero-actions {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 22px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .button.primary {
+            color: #1b120c;
+            background: linear-gradient(135deg, #f0bf7d 0%, #d88c41 100%);
+            box-shadow: 0 18px 38px rgba(216, 140, 65, 0.24);
+        }
+
+        .button.secondary {
+            color: #f9ecd7;
+            background: rgba(255, 243, 226, 0.08);
+            border: 1px solid rgba(255, 243, 226, 0.18);
+            backdrop-filter: blur(8px);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-card,
+        .panel,
+        .message {
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+        }
+
+        .hero-card {
+            justify-self: end;
+            width: min(420px, 100%);
+            padding: 26px;
+            border-radius: 30px;
+            background: linear-gradient(180deg, rgba(33, 23, 15, 0.72) 0%, rgba(20, 14, 10, 0.88) 100%);
+            backdrop-filter: blur(14px);
+            animation: rise 1.15s ease both;
+        }
+
+        .card-title {
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--muted);
+        }
+
+        .notes,
+        .product-grid,
+        .feature-list,
+        .selling-list,
+        .api-links,
+        .message-stack {
+            display: grid;
+            gap: 14px;
+        }
+
+        .pill {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 248, 236, 0.08);
+            border: 1px solid rgba(255, 248, 236, 0.09);
+            color: #f4d8b1;
+            font-size: 0.92rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 18px 14px;
+            border-radius: 20px;
+            background: var(--surface-soft);
+            border: 1px solid var(--line);
+            min-height: 112px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.55rem;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .section {
+            padding: 82px 0;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .panel {
+            padding: 30px;
+            border-radius: 30px;
+            background: linear-gradient(180deg, rgba(35, 24, 16, 0.9) 0%, rgba(25, 17, 12, 0.96) 100%);
+        }
+
+        h2 {
+            margin: 0 0 14px;
+            font-size: clamp(2rem, 3vw, 3rem);
+            line-height: 1;
+        }
+
+        .section-intro {
+            margin: 0 0 24px;
+            color: var(--muted);
+            line-height: 1.9;
+        }
+
+        .feature-item,
+        .selling-item,
+        .api-link,
+        .product-card {
+            padding: 18px 20px;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: rgba(255, 247, 233, 0.05);
+        }
+
+        .feature-item strong,
+        .selling-item strong,
+        .product-card strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #f7ddba;
+            font-size: 1.08rem;
+        }
+
+        .story-band {
+            margin-top: 24px;
+            padding: 26px 28px;
+            border-radius: 28px;
+            background:
+                linear-gradient(120deg, rgba(225, 170, 99, 0.11), rgba(255, 244, 224, 0.03)),
+                rgba(255, 246, 232, 0.04);
+            border: 1px solid var(--line);
+        }
+
+        .story-band p {
+            margin: 0;
+            color: rgba(249, 236, 215, 0.88);
+            line-height: 1.9;
+        }
+
+        .product-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .product-card {
+            background: linear-gradient(180deg, rgba(255, 247, 233, 0.07) 0%, rgba(255, 247, 233, 0.03) 100%);
+        }
+
+        .product-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0;
+        }
+
+        .meta-chip {
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255, 248, 236, 0.08);
+            border: 1px solid rgba(255, 248, 236, 0.09);
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .price {
+            margin-top: 14px;
+            font-size: 1.35rem;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .order-layout {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 24px;
+        }
+
+        .order-summary {
+            display: grid;
+            gap: 14px;
+        }
+
+        .message {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(255, 247, 233, 0.07);
+        }
+
+        .message.success {
+            color: var(--success);
+        }
+
+        .message.error {
+            color: var(--danger);
+        }
+
+        .order-form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .field label {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .order-input,
+        .field select,
+        .field input,
+        .field textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 243, 226, 0.12);
+            background: rgba(255, 248, 236, 0.06);
+            color: var(--text);
+            font: inherit;
+        }
+
+        .field textarea {
+            resize: vertical;
+        }
+
+        .errorlist {
+            margin: 0;
+            padding-left: 18px;
+            color: var(--danger);
+            font-size: 0.9rem;
+        }
+
+        .api-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            text-decoration: none;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .api-link:hover {
+            transform: translateY(-2px);
+            border-color: rgba(234, 190, 127, 0.32);
+        }
+
+        .api-link span {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .footer {
+            padding: 0 0 42px;
+            color: rgba(215, 185, 150, 0.72);
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 980px) {
+            .hero-grid,
+            .section-grid,
+            .order-layout,
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                min-height: auto;
+                background-position: 62% center;
+            }
+
+            .wrap,
+            .nav-inner {
+                width: min(100% - 32px, 1180px);
+            }
+
+            .nav {
+                padding: 22px 0;
+            }
+
+            .hero-grid {
+                gap: 22px;
+                padding: 108px 0 56px;
+            }
+
+            .hero-copy,
+            h1 {
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: clamp(2.6rem, 9vw, 4.6rem);
+            }
+
+            .lead,
+            .section-intro,
+            .story-band p {
+                line-height: 1.75;
+            }
+
+            .hero-card {
+                justify-self: stretch;
+                width: 100%;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .hero {
+                align-items: flex-end;
+                background-position: 68% center;
+            }
+
+            .hero-grid {
+                padding: 92px 0 42px;
+                gap: 18px;
+            }
+
+            .eyebrow {
+                padding: 7px 12px;
+                font-size: 0.72rem;
+                letter-spacing: 0.1em;
+            }
+
+            h1 {
+                margin: 16px 0 14px;
+                font-size: clamp(2.2rem, 10vw, 3.4rem);
+                line-height: 0.96;
+            }
+
+            .lead {
+                font-size: 0.98rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button {
+                width: 100%;
+                padding: 14px 18px;
+            }
+
+            .hero-card,
+            .panel {
+                padding: 22px;
+                border-radius: 24px;
+            }
+
+            .notes {
+                margin: 16px 0 18px;
+            }
+
+            .pill {
+                width: 100%;
+                text-align: center;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .stat {
+                min-height: 0;
+                padding: 16px;
+            }
+
+            .section {
+                padding: 56px 0;
+            }
+
+            h2 {
+                font-size: clamp(1.7rem, 8vw, 2.4rem);
+                line-height: 1.05;
+            }
+
+            .section-intro {
+                margin-bottom: 18px;
+                font-size: 0.96rem;
+            }
+
+            .feature-item,
+            .selling-item,
+            .api-link,
+            .product-card,
+            .story-band {
+                padding: 16px 18px;
+                border-radius: 20px;
+            }
+
+            .api-link {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .footer {
+                padding: 0 0 30px;
+                font-size: 0.92rem;
+                line-height: 1.7;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .wrap,
+            .nav-inner {
+                width: calc(100% - 24px);
+            }
+
+            .nav {
+                padding: 18px 0;
+            }
+
+            .brand {
+                font-size: 0.78rem;
+                letter-spacing: 0.12em;
+            }
+
+            .hero-grid {
+                padding: 84px 0 34px;
+            }
+
+            .hero-card,
+            .panel {
+                padding: 18px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: clamp(2rem, 11vw, 2.8rem);
+            }
+
+            .lead,
+            .section-intro,
+            .feature-item,
+            .selling-item,
+            .api-link,
+            .story-band p,
+            .product-card,
+            .field label {
+                font-size: 0.92rem;
+            }
+
+            .stat strong {
+                font-size: 1.35rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="nav">
+        <div class="nav-inner">
+            <div class="brand">Coffee Toba</div>
+            <div class="nav-links">
+                <a href="#story">Story</a>
+                <a href="#products">Products</a>
+                <a href="#order">Order</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="wrap">
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow">Rasa Danau Toba dalam satu seduhan</span>
+                    <h1>Hangatnya pagi Toba, dibawa ke dalam cangkir Anda.</h1>
+                    <p class="lead">
+                        Coffee Toba sekarang bukan hanya landing page promosi. Pengunjung bisa melihat varian kopi,
+                        memilih favoritnya, lalu langsung mengirim pesanan dari halaman yang sama.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a class="button primary" href="#order">Pesan Sekarang</a>
+                        <a class="button secondary" href="#products">Lihat Varian Kopi</a>
+                    </div>
+                </div>
+
+                <aside class="hero-card">
+                    <div class="card-title">Signature Taste Notes</div>
+                    <div class="notes">
+                        {% for note in taste_notes %}
+                        <div class="pill">{{ note }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="stat-grid">
+                        {% for stat in stats %}
+                        <div class="stat">
+                            <strong>{{ stat.value }}</strong>
+                            <div>{{ stat.label }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <main class="wrap">
+        <section class="section" id="story">
+            <div class="section-grid">
+                <article class="panel">
+                    <h2>Crafted for the sunrise moment.</h2>
+                    <p class="section-intro">
+                        Website ini sekarang dibangun mengikuti kasus bisnis Coffee Toba, sehingga sisi visual,
+                        struktur data, dan pemesanannya saling terhubung.
+                    </p>
+                    <div class="feature-list">
+                        {% for feature in features %}
+                        <div class="feature-item">
+                            <strong>{{ feature.title }}</strong>
+                            <div>{{ feature.description }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </article>
+
+                <article class="panel">
+                    <h2>Why Coffee Toba feels premium.</h2>
+                    <p class="section-intro">
+                        Bukan sekadar kopi, tapi mood, lanskap, dan identitas yang dibawa ke dalam pengalaman visual.
+                    </p>
+                    <div class="selling-list">
+                        {% for item in selling_points %}
+                        <div class="selling-item">
+                            <strong>Highlight</strong>
+                            <div>{{ item }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="story-band">
+                        <p>
+                            Dari kabut pagi di tepian danau hingga pola tenun yang kaya makna, Coffee Toba
+                            dirancang untuk tampil sebagai produk lokal yang punya rasa kuat dan presentasi yang berkelas.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="products">
+            <article class="panel">
+                <h2>Varian Coffee Toba</h2>
+                <p class="section-intro">
+                    Produk di bawah ini diambil langsung dari database. Anda bisa menambah atau mengubahnya lewat admin.
+                </p>
+                <div class="product-grid">
+                    {% for product in products %}
+                    <div class="product-card">
+                        <strong>{{ product.name }}</strong>
+                        <div>{{ product.tagline }}</div>
+                        <div class="product-meta">
+                            <span class="meta-chip">{{ product.get_roast_level_display }}</span>
+                            <span class="meta-chip">{{ product.origin }}</span>
+                            <span class="meta-chip">Intensity {{ product.intensity }}/5</span>
+                        </div>
+                        <div>{{ product.description }}</div>
+                        <div class="price">Rp {{ product.price }}</div>
+                    </div>
+                    {% empty %}
+                    <div class="product-card">
+                        <strong>Belum ada produk</strong>
+                        <div>Tambahkan varian kopi dari admin agar section ini terisi.</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </article>
+        </section>
+
+        <section class="section" id="order">
+            <div class="order-layout">
+                <article class="panel">
+                    <h2>Pesan Dari Landing Page</h2>
+                    <p class="section-intro">
+                        Isi form berikut untuk mengirim pesanan. Data pesanan akan langsung masuk ke database dan bisa dicek dari admin.
+                    </p>
+
+                    {% if messages %}
+                    <div class="message-stack">
+                        {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" class="order-form">
+                        {% csrf_token %}
+                        <div class="field">
+                            <label for="{{ order_form.coffee.id_for_label }}">Pilih kopi</label>
+                            {{ order_form.coffee }}
+                            {{ order_form.coffee.errors }}
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <label for="{{ order_form.customer_name.id_for_label }}">Nama lengkap</label>
+                                {{ order_form.customer_name }}
+                                {{ order_form.customer_name.errors }}
+                            </div>
+                            <div class="field">
+                                <label for="{{ order_form.phone_number.id_for_label }}">Nomor WhatsApp</label>
+                                {{ order_form.phone_number }}
+                                {{ order_form.phone_number.errors }}
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="{{ order_form.address.id_for_label }}">Alamat pengiriman</label>
+                            {{ order_form.address }}
+                            {{ order_form.address.errors }}
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <label for="{{ order_form.quantity.id_for_label }}">Jumlah</label>
+                                {{ order_form.quantity }}
+                                {{ order_form.quantity.errors }}
+                            </div>
+                            <div class="field">
+                                <label for="{{ order_form.grind_size.id_for_label }}">Tipe gilingan</label>
+                                {{ order_form.grind_size }}
+                                {{ order_form.grind_size.errors }}
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="{{ order_form.notes.id_for_label }}">Catatan tambahan</label>
+                            {{ order_form.notes }}
+                            {{ order_form.notes.errors }}
+                        </div>
+
+                        <button type="submit" class="button primary">Kirim Pesanan</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <h2>Live Store Snapshot</h2>
+                    <p class="section-intro">
+                        Landing page ini sekarang sudah nyambung ke struktur toko sederhana untuk Coffee Toba.
+                    </p>
+                    <div class="selling-list">
+                        <div class="selling-item">
+                            <strong>{{ product_count }}</strong>
+                            <div>produk aktif yang bisa ditampilkan di landing page dan API.</div>
+                        </div>
+                        <div class="selling-item">
+                            <strong>{{ order_count }}</strong>
+                            <div>pesanan tersimpan di database dan bisa dipantau dari admin.</div>
+                        </div>
+                        <div class="selling-item">
+                            <strong>Admin Ready</strong>
+                            <div>Anda bisa tambah varian kopi, ubah harga, dan update status pesanan dari Django admin.</div>
+                        </div>
+                    </div>
+
+                    <div class="story-band" style="margin-top: 18px;">
+                        <p>
+                            API juga sudah diganti ke endpoint yang sesuai bisnis coffee store, jadi project ini lebih siap
+                            dipakai untuk demo, presentasi, atau pengembangan lanjutan.
+                        </p>
+                    </div>
+
+                    <div class="api-links" style="margin-top: 18px;">
+                        {% for link in api_links %}
+                        <a class="api-link" href="{{ link.path }}">
+                            <strong>{{ link.label }}</strong>
+                            <span>{{ link.path }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="wrap footer">
+        Coffee Toba. Hangat, berkarakter, dan kini siap menerima pesanan dari landing page.
+    </footer>
+</body>
+</html>
